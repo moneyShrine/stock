@@ -3,6 +3,7 @@ package com.stock.controller;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +25,7 @@ public class StockController {
 	@Autowired
 	private StocksRepository stockRepository;
 	
-	Date date_timestamp = Calendar.getInstance().getTime();
-	
-	
+	Date date_timestamp = Calendar.getInstance().getTime();	
 	
 	@RequestMapping(method=RequestMethod.GET, value="/api/stocks")
 	public List<Stocks> getStocks(){
@@ -47,11 +46,11 @@ public class StockController {
 
 	@RequestMapping(method=RequestMethod.PUT, value="/api/stocks/{stockId}")
 	public void addStock(@RequestBody Stocks stock, @PathVariable int stockId) {
-		Stocks stocks = (Stocks) stockServiceImpl.getStock(stockId);
-		
-		stock.setId(stocks.getId());
-		stock.setLast_update(date_timestamp);
-		stock.setCreate_date(stocks.getCreate_date());
+		Optional <Stocks> stocks = stockServiceImpl.getStock(stockId);
+				
+		stock.setId(stocks.get().getId());
+		stock.setLast_update(Calendar.getInstance().getTime());
+		stock.setCreate_date(stocks.get().getCreate_date());
 		stockServiceImpl.addSock(stock);
 	}
 	
@@ -60,6 +59,5 @@ public class StockController {
 		if(stockRepository.findById(stockId).isPresent()) {
 			stockServiceImpl.removeStock(stockId);
 		}
-	}
-	
+	}	
 }
