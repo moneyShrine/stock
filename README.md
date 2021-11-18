@@ -1,1 +1,1 @@
-# stock
+# stock manager api for CRUD operations
